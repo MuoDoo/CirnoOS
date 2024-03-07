@@ -1,0 +1,6 @@
+[submodule "CirnoCore"]
+	path = CirnoCore
+	url = https://github.com/MuoDoo/CirnoCore
+[submodule "CirnoUser"]
+	path = CirnoUser
+	url = https://github.com/MuoDoo/CirnoUser
