@@ -49,9 +49,17 @@ fn easy_fs_pack() -> std::io::Result<()> {
                 .takes_value(true)
                 .help("Executable target dir(with backslash)"),
         )
+        .arg(
+            Arg::with_name("data")
+                .short("d")
+                .long("data")
+                .takes_value(true)
+                .help("Data files dir(with backslash)"),
+        )
         .get_matches();
     let src_path = matches.value_of("source").unwrap();
     let target_path = matches.value_of("target").unwrap();
+    let data_path = matches.value_of("data").unwrap();
     println!("src_path = {}\ntarget_path = {}", src_path, target_path);
     let block_file = Arc::new(BlockFile(Mutex::new({
         let f = OpenOptions::new()
@@ -82,6 +90,15 @@ fn easy_fs_pack() -> std::io::Result<()> {
         // create a file in easy-fs
         let inode = root_inode.create(app.as_str()).unwrap();
         // write data to easy-fs
+        inode.write_at(0, all_data.as_slice());
+    }
+    let datas = read_dir(data_path).unwrap();
+    for data in datas {
+        let name_with_ext = data.unwrap().file_name().into_string().unwrap();
+        let mut host_file = File::open(format!("{}{}", data_path, name_with_ext)).unwrap();
+        let mut all_data: Vec<u8> = Vec::new();
+        host_file.read_to_end(&mut all_data).unwrap();
+        let inode = root_inode.create(name_with_ext.as_str()).unwrap();
         inode.write_at(0, all_data.as_slice());
     }
     // list apps

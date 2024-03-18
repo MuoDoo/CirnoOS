@@ -7,7 +7,6 @@ CirnoOS is an operating system kernel written in Rust.
 * Simple File System
 * Network stack
 * Signal System
-* Async I/O
 * Display Driver
 
 ## Struct
